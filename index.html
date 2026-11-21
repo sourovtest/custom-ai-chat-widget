@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f3e9">
+  <meta name="description" content="Bongora support chat widget local preview page.">
+  <title>Bongora — সহায়তা উইজেট প্রিভিউ</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Noto Sans Bengali", "Hind Siliguri", "Nirmala UI", "Segoe UI", sans-serif;
+      color: #20372f;
+      background: #f6f3e9;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    * { box-sizing: border-box; }
+    body { min-width: 320px; min-height: 100vh; margin: 0; }
+    .site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(1120px, calc(100% - 48px));
+      height: 82px;
+      margin: 0 auto;
+      border-bottom: 1px solid #e4e0d4;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: inherit;
+      font-family: Georgia, "Noto Serif Bengali", serif;
+      font-size: 24px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border-radius: 12px 12px 12px 4px;
+      color: #f9f4e7;
+      background: #174b3e;
+      font-size: 20px;
+    }
+
+    .header-note { color: #68796e; font-size: 13px; }
+    main {
+      display: grid;
+      min-height: calc(100vh - 83px);
+      place-items: center;
+      padding: 48px 24px 100px;
+    }
+
+    .intro { width: min(680px, 100%); text-align: center; }
+    .eyebrow {
+      margin: 0 0 15px;
+      color: #a26d26;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Noto Serif Bengali", serif;
+      font-size: clamp(36px, 6vw, 62px);
+      font-weight: 600;
+      letter-spacing: -.035em;
+      line-height: 1.18;
+    }
+
+    .intro-copy {
+      max-width: 520px;
+      margin: 20px auto 0;
+      color: #63756a;
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .preview-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: fit-content;
+      margin: 30px auto 0;
+      padding: 12px 16px;
+      border: 1px solid #e0dfd3;
+      border-radius: 14px;
+      background: rgba(255, 253, 247, .78);
+      color: #53675c;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .preview-dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 9px;
+      border-radius: 50%;
+      background: #d79132;
+    }
+
+    @media (max-width: 520px) {
+      .site-header { width: calc(100% - 32px); height: 70px; }
+      .header-note { max-width: 110px; font-size: 11px; text-align: right; }
+      main { min-height: calc(100vh - 71px); padding: 36px 20px 96px; }
+      .intro-copy { font-size: 15px; }
+    }
+  </style>
+  <script
+    src="frontend/widget.js"
+    data-api-url="http://127.0.0.1:8000"
+    data-brand-name="Bongora"
+    data-primary-color="#174b3e"
+    data-welcome-message="Bongora সহায়তায় স্বাগতম। পণ্য, অর্ডার বা বিক্রেতা নিয়ে কী জানতে চান?"
+    data-default-role="support"
+    defer
+  ></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#" aria-label="Bongora home">
+      <span class="brand-mark" aria-hidden="true">ব</span>
+      <span>Bongora</span>
+    </a>
+    <span class="header-note">প্রিভিউ · স্থানীয় পরীক্ষা</span>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">সহজ কেনাকাটা, পাশে আছি</p>
+      <h1 id="page-title">আপনার কেনাকাটায়<br>মানুষের মতো সহায়তা</h1>
+      <p class="intro-copy">
+        পণ্য, অর্ডার কিংবা বিক্রেতা হিসেবে কাজ—যে কোনো বিষয়ে পাশে আছি।
+        নিচের কোণার Bongora সহায়তা বোতাম থেকে কথা শুরু করুন।
+      </p>
+      <div class="preview-card" role="note">
+        <span class="preview-dot" aria-hidden="true"></span>
+        <span>উইজেট প্রিভিউ চলছে। চ্যাট API Phase 3-এ যুক্ত হবে।</span>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

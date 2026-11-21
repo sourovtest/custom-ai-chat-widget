@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bongora Chatbot Rules</title>
+  <style>
+    :root {
+      font-family: "Segoe UI", "Nirmala UI", sans-serif;
+      color: #20372f;
+      background: #f3f1e7;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; }
+    .shell { display: grid; grid-template-columns: 220px minmax(0, 1fr); min-height: 100vh; }
+    .sidebar { padding: 28px 20px; background: #174b3e; color: #fff; }
+    .brand { display: flex; align-items: center; gap: 10px; font-family: Georgia, serif; font-size: 21px; }
+    .brand-mark { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 13px 13px 13px 4px; background: #efc56e; color: #174b3e; }
+    .nav-label { margin-top: 44px; color: #bcd0c5; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+    .nav-item { margin-top: 10px; padding: 11px 12px; border-radius: 10px; background: rgba(255,255,255,.12); font-size: 14px; }
+    main { padding: 32px clamp(20px, 4vw, 48px); }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    h1 { margin: 0; font-family: Georgia, serif; font-size: clamp(28px, 4vw, 38px); }
+    .button { min-height: 42px; border: 0; border-radius: 11px; padding: 10px 14px; background: #174b3e; color: #fff; font-weight: 700; cursor: pointer; }
+    .button.secondary { background: #e8eadf; color: #29483d; }
+    .button.danger { background: #9a4d3e; }
+    .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 180px)); gap: 12px; margin: 24px 0; }
+    .stat { min-height: 92px; padding: 16px; border: 1px solid #dedfd3; border-radius: 14px; background: #fffdf7; }
+    .stat strong { display: block; margin-top: 8px; font-size: 25px; }
+    .rule-list { display: grid; gap: 10px; }
+    .rule { display: grid; grid-template-columns: minmax(180px, 1fr) 150px 120px auto; align-items: center; gap: 12px; padding: 14px; border: 1px solid #dedfd3; border-radius: 14px; background: #fffdf7; }
+    .rule-name { font-weight: 800; }
+    .muted { color: #738078; font-size: 12px; }
+    .badge { width: fit-content; padding: 5px 8px; border-radius: 999px; background: #e6eee7; color: #35634f; font-size: 12px; }
+    .badge.off { background: #eee8e2; color: #7a5c50; }
+    .actions { display: flex; gap: 7px; justify-content: flex-end; }
+    dialog { width: min(620px, calc(100vw - 32px)); border: 1px solid #d7dacb; border-radius: 18px; padding: 0; background: #fffdf7; color: #20372f; box-shadow: 0 24px 70px rgba(25,50,39,.22); }
+    dialog::backdrop { background: rgba(24,43,35,.32); }
+    .dialog-head, .dialog-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 18px 20px; }
+    .dialog-head { border-bottom: 1px solid #e3e4da; }
+    .dialog-actions { border-top: 1px solid #e3e4da; }
+    .form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 20px; }
+    label { display: grid; gap: 6px; font-size: 13px; font-weight: 700; }
+    label.full { grid-column: 1 / -1; }
+    input, select, textarea { width: 100%; min-height: 42px; border: 1px solid #ccd5ca; border-radius: 9px; padding: 9px 10px; background: #fff; color: #20372f; font: inherit; }
+    textarea { min-height: 88px; resize: vertical; }
+    .auth { display: grid; gap: 10px; max-width: 420px; margin: 72px auto; padding: 24px; border: 1px solid #dedfd3; border-radius: 16px; background: #fffdf7; }
+    .notice { min-height: 20px; color: #9a4d3e; font-size: 13px; }
+    [hidden] { display: none !important; }
+    @media (max-width: 760px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { min-height: 82px; }
+      .nav-label, .nav-item { display: none; }
+      .stats { grid-template-columns: repeat(3, 1fr); }
+      .rule { grid-template-columns: 1fr; }
+      .actions { justify-content: flex-start; }
+      .form { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <section class="auth" id="auth">
+    <h1>Bongora Admin</h1>
+    <label>Administrator key
+      <input id="api-key" type="password" autocomplete="current-password">
+    </label>
+    <button class="button" id="unlock" type="button">Open rules</button>
+    <div class="notice" id="auth-notice" role="alert"></div>
+  </section>
+
+  <div class="shell" id="app" hidden>
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">ব</span><span>Bongora</span></div>
+      <div class="nav-label">Management</div>
+      <div class="nav-item">Chatbot rules</div>
+    </aside>
+    <main>
+      <div class="topbar">
+        <h1>Chatbot rules</h1>
+        <button class="button" id="new-rule" type="button">New rule</button>
+      </div>
+      <section class="stats" aria-label="Rule statistics">
+        <div class="stat">Total<strong id="total-count">0</strong></div>
+        <div class="stat">Active<strong id="active-count">0</strong></div>
+        <div class="stat">Inactive<strong id="inactive-count">0</strong></div>
+      </section>
+      <section class="rule-list" id="rule-list" aria-live="polite"></section>
+    </main>
+  </div>
+
+  <dialog id="rule-dialog">
+    <form id="rule-form">
+      <div class="dialog-head"><strong id="dialog-title">New rule</strong><button class="button secondary" id="close-dialog" type="button">Close</button></div>
+      <div class="form">
+        <label class="full">Rule name<input name="rule_name" required maxlength="255"></label>
+        <label>Trigger event<select name="trigger_event"><option value="on_first_visit">On first visit</option><option value="time_on_page">Time on page</option><option value="url_match">URL match</option></select></label>
+        <label>Action type<select name="action_type"><option value="Static Message">Static Message</option><option value="AI Persona">AI Persona</option></select></label>
+        <label class="full">Static message<textarea name="static_message" maxlength="10000"></textarea></label>
+        <label>Assigned role<select name="assigned_role"><option value="">None</option><option value="Sales Assistant">Sales Assistant</option><option value="Customer Support">Customer Support</option><option value="Vendor Assistant">Vendor Assistant</option><option value="FAQ Assistant">FAQ Assistant</option><option value="Custom AI Persona">Custom AI Persona</option></select></label>
+        <label>Trigger config<input name="trigger_config" value="{}" aria-label="Trigger configuration JSON"></label>
+        <label>Priority<input name="priority" type="number" min="0" max="65535" value="100"></label>
+        <label>Execution frequency<select name="execution_frequency"><option value="once_per_session">Once per session</option><option value="once">Once</option><option value="always">Always</option></select></label>
+        <label class="full">Active<select name="is_active"><option value="true">Active</option><option value="false">Inactive</option></select></label>
+      </div>
+      <div class="dialog-actions"><span class="notice" id="form-notice" role="alert"></span><button class="button" type="submit">Save rule</button></div>
+    </form>
+  </dialog>
+
+  <script>
+    const apiUrl = "http://127.0.0.1:8000";
+    const auth = document.getElementById("auth");
+    const app = document.getElementById("app");
+    const dialog = document.getElementById("rule-dialog");
+    const form = document.getElementById("rule-form");
+    let editingId = null;
+    let apiKey = "";
+
+    async function api(path, options = {}) {
+      const response = await fetch(apiUrl + path, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          "X-Admin-Key": apiKey,
+          ...(options.headers || {}),
+        },
+      });
+      if (response.status === 204) return null;
+      const body = await response.json().catch(() => ({ detail: "The server returned an unreadable response." }));
+      if (!response.ok) throw new Error(typeof body.detail === "string" ? body.detail : "The request failed.");
+      return body;
+    }
+
+    async function loadRules() {
+      const data = await api("/api/rules");
+      const rules = data.rules;
+      document.getElementById("total-count").textContent = rules.length;
+      document.getElementById("active-count").textContent = rules.filter(rule => rule.is_active).length;
+      document.getElementById("inactive-count").textContent = rules.filter(rule => !rule.is_active).length;
+      document.getElementById("rule-list").replaceChildren(...rules.map(rule => {
+        const item = document.createElement("article");
+        item.className = "rule";
+        item.innerHTML = `
+          <div><div class="rule-name"></div><div class="muted"></div></div>
+          <div><span class="badge ${rule.is_active ? "" : "off"}"></span></div>
+          <div class="muted"></div>
+          <div class="actions">
+            <button class="button secondary edit" type="button">Edit</button>
+            <button class="button danger delete" type="button">Delete</button>
+          </div>`;
+        item.querySelector(".rule-name").textContent = rule.rule_name;
+        item.querySelector(".muted").textContent = `${rule.trigger_event} · ${rule.action_type}`;
+        item.querySelector(".badge").textContent = rule.is_active ? "Active" : "Inactive";
+        item.querySelector(".actions").previousElementSibling.textContent = `Priority ${rule.priority}`;
+        item.querySelector(".edit").addEventListener("click", () => openRule(rule));
+        item.querySelector(".delete").addEventListener("click", () => deleteRule(rule));
+        return item;
+      }));
+    }
+
+    function openRule(rule = null) {
+      editingId = rule?.id || null;
+      document.getElementById("dialog-title").textContent = rule ? "Edit rule" : "New rule";
+      document.getElementById("form-notice").textContent = "";
+      form.reset();
+      if (rule) {
+        form.elements.rule_name.value = rule.rule_name;
+        form.elements.trigger_event.value = rule.trigger_event;
+        form.elements.action_type.value = rule.action_type;
+        form.elements.static_message.value = rule.static_message || "";
+        form.elements.assigned_role.value = rule.assigned_role || "";
+        form.elements.trigger_config.value = JSON.stringify(rule.trigger_config || {});
+        form.elements.priority.value = rule.priority;
+        form.elements.execution_frequency.value = rule.execution_frequency;
+        form.elements.is_active.value = String(Boolean(rule.is_active));
+      }
+      dialog.showModal();
+    }
+
+    async function deleteRule(rule) {
+      if (!confirm(`Delete "${rule.rule_name}"?`)) return;
+      try {
+        await api(`/api/rules/${rule.id}`, { method: "DELETE" });
+        await loadRules();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    document.getElementById("unlock").addEventListener("click", async () => {
+      apiKey = document.getElementById("api-key").value.trim();
+      document.getElementById("auth-notice").textContent = "";
+      try {
+        await loadRules();
+        sessionStorage.setItem("bongora.admin.key", apiKey);
+        auth.hidden = true;
+        app.hidden = false;
+      } catch (error) {
+        document.getElementById("auth-notice").textContent = error.message;
+      }
+    });
+
+    document.getElementById("new-rule").addEventListener("click", () => openRule());
+    document.getElementById("close-dialog").addEventListener("click", () => dialog.close());
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      const formData = new FormData(form);
+      let triggerConfig;
+      try {
+        triggerConfig = JSON.parse(String(formData.get("trigger_config") || "{}"));
+        if (!triggerConfig || Array.isArray(triggerConfig) || typeof triggerConfig !== "object") throw new Error();
+      } catch {
+        document.getElementById("form-notice").textContent = "Trigger config must be valid JSON object.";
+        return;
+      }
+      const payload = {
+        rule_name: formData.get("rule_name").trim(),
+        trigger_event: formData.get("trigger_event"),
+        action_type: formData.get("action_type"),
+        static_message: formData.get("static_message").trim() || null,
+        assigned_role: formData.get("assigned_role") || null,
+        trigger_config: triggerConfig,
+        priority: Number(formData.get("priority")),
+        is_active: formData.get("is_active") === "true",
+        execution_frequency: formData.get("execution_frequency"),
+      };
+      try {
+        await api(editingId ? `/api/rules/${editingId}` : "/api/rules", {
+          method: editingId ? "PUT" : "POST",
+          body: JSON.stringify(payload),
+        });
+        dialog.close();
+        await loadRules();
+      } catch (error) {
+        document.getElementById("form-notice").textContent = error.message;
+      }
+    });
+
+    apiKey = sessionStorage.getItem("bongora.admin.key") || "";
+    if (apiKey) {
+      document.getElementById("api-key").value = apiKey;
+    }
+  </script>
+</body>
+</html>

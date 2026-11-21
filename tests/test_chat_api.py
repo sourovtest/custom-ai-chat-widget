@@ -27,6 +27,26 @@ def test_widget_script_is_served_by_api():
     assert "window.ChatbotConfig" in response.text
 
 
+def test_local_preview_and_relative_widget_script_are_served_by_api():
+    page_response = client.get("/")
+    script_response = client.get("/frontend/widget.js")
+
+    assert page_response.status_code == 200
+    assert 'src="frontend/widget.js"' in page_response.text
+    assert script_response.status_code == 200
+    assert script_response.text == client.get("/widget.js").text
+
+
+def test_admin_panel_is_served_by_api_url():
+    response = client.get("/admin")
+    slash_response = client.get("/admin/")
+
+    assert response.status_code == 200
+    assert "Bongora Chatbot Rules" in response.text
+    assert 'id="api-key"' in response.text
+    assert slash_response.status_code == 200
+
+
 def test_default_role_and_brand_are_configurable():
     brain = AIBrain(replace(settings, brand_name="Example Shop"))
     assert brain.route_role("/help", "sales") == "Sales Assistant"

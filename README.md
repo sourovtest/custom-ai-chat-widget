@@ -3,6 +3,7 @@
 A standalone chatbot widget and API for Bongora, built with Vanilla JavaScript, FastAPI, and MySQL.
 
 For step-by-step Bengali instructions for chat users and administrators, see [USER_MANUAL.md](./USER_MANUAL.md).
+For AI-assisted continuation and integration with other websites, see [AI_HANDOVER.md](./AI_HANDOVER.md).
 
 ## Quick Start (3 Steps)
 
@@ -40,6 +41,10 @@ uvicorn backend.main:app --reload
 ```
 
 The API and embeddable script are available at `http://127.0.0.1:8000` and `http://127.0.0.1:8000/widget.js`. Health check: `http://127.0.0.1:8000/health`.
+
+### One-click start on Windows
+
+After configuring `backend/.env` and creating the database, double-click **Start Chatbot.bat** in the project folder. On its first run it creates `.venv` and installs the backend dependencies, starts the API, and opens the local chat preview at `http://127.0.0.1:8000/`. If `backend/.env` is missing, it creates the file from the example and asks you to configure it before starting again. Keep the **Bongora Chatbot Server** window open while chatting; close it to stop the server.
 
 ## 1-Snippet Website Integration
 
@@ -96,4 +101,4 @@ Set `AI_PROVIDER=fallback`, `gemini`, or `openai`. Set `AI_API_KEY` to the key f
 
 ## Admin rules
 
-Set `ADMIN_API_KEY` in `backend/.env`, then serve or open `admin/index.html` and enter the same key. The Admin Panel creates, edits, activates, deactivates, and deletes validated rules. Public widget delivery exposes only active rules; CRUD operations require `X-Admin-Key`.
+Start the local server, then open `http://127.0.0.1:8000/admin`. Enter the `ADMIN_API_KEY` from `backend/.env`. The Admin Panel creates, edits, activates, deactivates, and deletes validated rules. Public widget delivery exposes only active rules; CRUD operations require `X-Admin-Key`.

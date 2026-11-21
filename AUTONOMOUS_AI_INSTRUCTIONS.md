@@ -28,6 +28,7 @@ BONGORA-AI-CHATBOT/
 ├── admin/index.html
 ├── tests/
 ├── index.html
+├── AI_HANDOVER.md
 ├── AUTONOMOUS_AI_INSTRUCTIONS.md
 ├── PROJECT_PROGRESS.md
 ├── INTEGRATION_GUIDE.md
@@ -58,6 +59,18 @@ Respond as an empathetic, real Bongora support executive for buyers and sellers.
 - `?test_mode=true` → Internal QA Assistant; never expose internal QA behavior to regular customers.
 
 Match URLs carefully, including query parameters. Keep routing configurable and consider customer context and intent.
+
+### Deferred Feature Requirements: Customer and Product Inquiries
+
+**Status: Specified for future work; not implemented.** Do not begin implementation until the user explicitly authorizes it and the website's authentication and product/seller data interfaces have been inspected.
+
+- For logged-in customers, associate chatbot conversations and inquiries with the customer ID and display name from a server-verified website session or signed authentication claim. Never trust a customer ID or seller ID supplied only by browser input. Keep anonymous sessions usable and label them as anonymous.
+- For product-specific inquiries, associate the conversation with the canonical product ID, product link/name, and owning seller ID from the trusted catalog integration. Do not infer ownership from user-entered product names or unvalidated client metadata.
+- Persist a reportable inquiry linked to its conversation, customer when authenticated, product/seller when relevant, creation/update timestamps, and a manageable status such as new, in progress, or resolved.
+- Provide the main administrator one clear inbox for all inquiries, including general inquiries without a product. Make it easy to identify the customer, product, seller, latest message, time, and status; support opening the related conversation and practical search/filter/sort.
+- Allow an authenticated seller to view only product-specific inquiries for products that seller owns. Enforce ownership and role access on every server request; hiding other sellers' records in the UI is not sufficient. The main administrator may view all inquiries.
+- Minimize customer data, never store authentication credentials or tokens in conversation records, and avoid exposing unrelated customer details to sellers. Do not add email/SMS notifications or external integrations unless separately authorized.
+- Add tests for trusted identity mapping, anonymous sessions, product/seller association, administrator-wide visibility, seller ownership isolation, and unauthorized access before claiming the feature complete.
 
 ## Quality, SEO, Accessibility, and Human-Crafted Standards
 
@@ -427,6 +440,7 @@ At initialization, all tasks start pending. Use `[ ]` Pending, `[~]` In Progress
 
 - `AUTONOMOUS_AI_INSTRUCTIONS.md`: objectives, architecture, standards, security, workflow, and roadmap.
 - `PROJECT_PROGRESS.md`: synchronized five-phase checklist, verified progress, QA results, issues, blockers, and next authorized action.
+- `AI_HANDOVER.md`: current architecture, reusable website integration steps, verified boundaries, deferred requirements, and continuation guidance for future AI/developer work.
 - `README.md`: overview, stack, installation, configuration, development setup, and API overview.
 - `INTEGRATION_GUIDE.md`: Bongora integration snippet, options, troubleshooting, and deployment notes.
 - Update documentation when an authorized milestone is completed and verified.

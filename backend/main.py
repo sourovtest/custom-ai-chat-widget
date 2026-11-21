@@ -90,6 +90,20 @@ def health():
     }
 
 
+@app.get("/", include_in_schema=False)
+def preview_page():
+    preview_path = Path(__file__).resolve().parents[1] / "index.html"
+    return FileResponse(preview_path, media_type="text/html")
+
+
+@app.get("/admin", include_in_schema=False)
+@app.get("/admin/", include_in_schema=False)
+def admin_page():
+    admin_path = Path(__file__).resolve().parents[1] / "admin" / "index.html"
+    return FileResponse(admin_path, media_type="text/html")
+
+
+@app.get("/frontend/widget.js", include_in_schema=False)
 @app.get("/widget.js", include_in_schema=False)
 def widget_script():
     widget_path = Path(__file__).resolve().parents[1] / "frontend" / "widget.js"

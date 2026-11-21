@@ -28,31 +28,33 @@
 
 ## ২. Local development-এ চালু করা
 
-PowerShell-এ project folder থেকে:
+Windows-এ project folder-এর **Start Chatbot.bat** ফাইলে double-click করুন। প্রথমবার এটি `.venv` তৈরি করে প্রয়োজনীয় Python package install করবে, তারপর chatbot server চালু করে browser-এ local preview খুলবে। `backend/.env` না থাকলে এটি `.env.example` থেকে ফাইল বানাবে; MySQL settings ও প্রয়োজনে AI API key বসিয়ে আবার double-click করুন।
+
+- Chat preview: `http://127.0.0.1:8000/`
+- API health: `http://127.0.0.1:8000/health`
+- ব্যবহার চলাকালে **Bongora Chatbot Server** window খোলা রাখুন। Chatbot বন্ধ করতে ওই window বন্ধ করুন।
+- চালু হতে সমস্যা হলে server window-এর error পড়ুন এবং নিচের সাধারণ সমস্যা সমাধান অংশ দেখুন।
+
+PowerShell-এ হাতে চালাতে চাইলে project folder থেকে:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 uvicorn backend.main:app --reload
 ```
 
-তারপর browser-এ:
-
-- Widget preview: `http://127.0.0.1:4173/index.html`
-- API health: `http://127.0.0.1:8000/health`
-
-Preview server আলাদাভাবে না চললে project root থেকে চালান:
+এই পদ্ধতিতে আলাদা preview page চাইলে project root থেকে static server চালান:
 
 ```powershell
 python -m http.server 4173 --bind 127.0.0.1
 ```
 
-Health response-এ `"status":"ok"` এবং `"database":"ok"` থাকলে API ও database প্রস্তুত। `"ai_provider":"gemini"` থাকলে Gemini সক্রিয়; provider অনুপলব্ধ হলে নিরাপদ fallback উত্তর আসতে পারে।
+তারপর `http://127.0.0.1:4173/index.html` খুলুন। Health response-এ `"status":"ok"` এবং `"database":"ok"` থাকলে API ও database প্রস্তুত। `"ai_provider":"gemini"` থাকলে Gemini সক্রিয়; provider অনুপলব্ধ হলে নিরাপদ fallback উত্তর আসতে পারে।
 
 Environment file-এ API key বা database password আছে—সেটি কাউকে পাঠাবেন না, commit করবেন না, screenshot-এও দেখাবেন না।
 
 ## ৩. Administrator হিসেবে rules পরিচালনা
 
-Admin panel খুলে **Administrator key** দিন। সঠিক key গ্রহণ হলে rule list, Active/Inactive সংখ্যা এবং **New rule** দেখা যাবে। Key-টি administrator-এর কাছ থেকে আলাদা নিরাপদ মাধ্যমে নিন; chat বা public document-এ লিখবেন না।
+**Start Chatbot.bat** চালু রেখে browser-এ `http://127.0.0.1:8000/admin` খুলুন। [backend/.env](./backend/.env)-এর `ADMIN_API_KEY` দিন। সঠিক key গ্রহণ হলে rule list, Active/Inactive সংখ্যা এবং **New rule** দেখা যাবে। Key-টি administrator-এর কাছ থেকে আলাদা নিরাপদ মাধ্যমে নিন; chat বা public document-এ লিখবেন না।
 
 ### নতুন rule তৈরি
 
